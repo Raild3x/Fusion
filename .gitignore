@@ -22,3 +22,10 @@ sourcemap.json
 
 # Ignore MacOS DS_Store
 .DS_Store
+
+# Ignore CI folder for test secrets
+.ci/
+
+# Ignore coverage output and the coverage engine's build dir
+.coverage/
+/tools/coverage/engine/target/
