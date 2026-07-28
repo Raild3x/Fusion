@@ -151,12 +151,13 @@ function class.addVelocity<T>(
 	if deltaType ~= self._activeType then
 		External.logError("springTypeMismatch", nil, deltaType, self._activeType)
 	end
-	local newStartV = unpackType(deltaValue, deltaType)
+	local newV = unpackType(deltaValue, deltaType)
 	for index, velocity in self._activeLatestV do
-		newStartV[index] += velocity
+		newV[index] += velocity
 	end
+	self._activeLatestV = newV
+	self._activeStartV = table.clone(newV)
 	self._activeStartP = table.clone(self._activeLatestP)
-	self._activeStartV = newStartV
 	self._stopwatch:zero()
 	self._stopwatch:unpause()
 	change(self)
@@ -171,7 +172,8 @@ function class.setPosition<T>(
 	if newType ~= self._activeType then
 		External.logError("springTypeMismatch", nil, newType, self._activeType)
 	end
-	self._activeStartP = unpackType(newValue, newType)
+	self._activeLatestP = unpackType(newValue, newType)
+	self._activeStartP = table.clone(self._activeLatestP)
 	self._activeStartV = table.clone(self._activeLatestV)
 	self._stopwatch:zero()
 	self._stopwatch:unpause()
@@ -188,10 +190,11 @@ function class.setVelocity<T>(
 		if newType ~= self._activeType then
 			External.logError("springTypeMismatch", nil, newType, self._activeType)
 		end
-		self._activeStartV = unpackType(newValue, newType)
+		self._activeLatestV = unpackType(newValue, newType)
 	else
-		self._activeStartV = table.create(self._activeNumSprings, 0)
+		self._activeLatestV = table.create(self._activeNumSprings, 0)
 	end
+	self._activeStartV = table.clone(self._activeLatestV)
 	self._activeStartP = table.clone(self._activeLatestP)
 	self._stopwatch:zero()
 	self._stopwatch:unpause()
